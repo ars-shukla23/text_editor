@@ -6,12 +6,18 @@
 
 struct termios orig_termios;
 
+void die(const char *s){
+   perror(s);
+   exit(1);
+}
+
+
 void disableRawMode(){
-  tcsetattr(STDIN_FILENO,TCSAFLUSH,&orig_termios);
+ if(tcsetattr(STDIN_FILENO,TCSAFLUSH,&orig_termios)==-1)die("tcsetattr");
 }
 
 void enableRawMode(){
-  tcgetattr(STDIN_FILENO,&orig_termios);
+  if(tcgetattr(STDIN_FILENO,&orig_termios)==-1)die("tcgetattr");
   atexit(disableRawMode);
 
   struct termios raw_struct= orig_termios;
@@ -22,7 +28,7 @@ void enableRawMode(){
   raw_struct.c_cc[VMIN]=0;
   raw_struct.c_cc[VTIME]=1;
 
-  tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw_struct);
+ if(tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw_struct)==-1)die("tcsetattr");
 }
 
 
