@@ -19,20 +19,25 @@ void enableRawMode(){
   raw_struct.c_oflag &=~(OPOST);
   raw_struct.c_cflag |=(CS8);
   raw_struct.c_lflag &=~(ECHO | ICANON | IEXTEN | ISIG);
+  raw_struct.c_cc[VMIN]=0;
+  raw_struct.c_cc[VTIME]=1;
+
   tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw_struct);
 }
 
 
 int main(){
   enableRawMode();
-  char c;
-  while(read(STDIN_FILENO,&c,1)==1 && c!='q'){
+  while(1){
+   char c='\0';
+    read(STDIN_FILENO,&c,1);
     if(iscntrl(c)){
       printf("%d\r\n",c);
     } 
     else{
      printf("%d ('%c')\r\n",c,c);
     }
+    if(c=='q')break;
   }
   return 0;
 
