@@ -16,6 +16,7 @@ void enableRawMode(){
 
   struct termios raw_struct= orig_termios;
   raw_struct.c_iflag &=~(ICRNL|IXON);
+  raw_struct.c_oflag &=~(OPOST);
   raw_struct.c_lflag &=~(ECHO | ICANON | IEXTEN | ISIG);
   tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw_struct);
 }
@@ -35,4 +36,3 @@ int main(){
   return 0;
 
 }
-
