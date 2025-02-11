@@ -49,7 +49,15 @@ char editorReadKey(){
     }
    return c;
 }
+/*** output ***/
+//"/x1b" is the escape character
+void editorRefreshScreen(){
+   write(STDOUT_FILENO,"\x1b[2J",4);
+}
 
+
+
+/*** input ***/
 //editorProcessKeypress() waits for a keypress and then handles it accordingly
 void editorProcessKeypress(){
   char c=editorReadKey();
@@ -66,6 +74,7 @@ int main(){
   enableRawMode();
 
   while(1){
+   editorRefreshScreen();
    editorProcessKeypress();
   }
 
