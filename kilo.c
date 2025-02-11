@@ -40,20 +40,34 @@ void enableRawMode(){
  if(tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw_struct)==-1)die("tcsetattr");
 }
 
+//editorReadKey()'s job is to wait for one keypress and then return it
+char editorReadKey(){
+  int nread;
+  char c;
+  while((nread=read(STDIN_FILENO,&c,1))!=1){
+    if(nread == -1 && errno != EAGAIN)die("read");
+    }
+   return c;
+}
+
+//editorProcessKeypress() waits for a keypress and then handles it accordingly
+void editorProcessKeypress(){
+  char c=editorReadKey();
+  switch(c){
+   case CTRL_KEY('q'):
+    exit(1);
+    break;
+   }
+}
+
+
 /*** init ***/
 int main(){
   enableRawMode();
-  while(1){
-   char c='\0';
-   if(read(STDIN_FILENO,&c,1)==-1)die("read");
-    if(iscntrl(c)){
-      printf("%d\r\n",c);
-    } 
-    else{
-     printf("%d ('%c')\r\n",c,c);
-    }
-    if(c==CTRL_KEY('q'))break;
-  }
-  return 0;
 
+  while(1){
+   editorProcessKeypress();
+  }
+
+  return 0;
 }
