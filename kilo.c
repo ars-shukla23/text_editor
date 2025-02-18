@@ -93,6 +93,18 @@ int getWindowSize(int *rows,int *cols){
    }
 }
 
+/*** append buffer ***/
+// Its not a good idea to make a whole bunch of small 'write()'s everytime we refresh the screen. It would be better do one big write() to make sure the
+// screen updates at once. We want to replace all our write() calls with code that appends the string to the buffer, and then write() this buffer at the
+// end. C doesn't have dynamic strings so we'll create our own dynamic string type that supports one operation: appending. We define a struct called abuf
+
+struct abuf{
+  char *b;
+  int len;
+};
+
+#define ABUF_INIT {NULL,0}
+
 /*** output ***/
 
 void editorDrawRows(){
